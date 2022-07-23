@@ -14,9 +14,9 @@ namespace Kata.Test
         }
 
         [Test]
-        public void Comare()
+        public void Compare()
         {
-            _bookmarkProcess.TranseFerFile();
+            _bookmarkProcess.ClearTracingCode(@"bookmarks.txt");
 
             var acutual = TestTool.GetFileHash("bookmarks_clear.txt");
             var expected = TestTool.GetFileHash("expectedbookmarks.txt");

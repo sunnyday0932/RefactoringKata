@@ -6,12 +6,17 @@ namespace RefactorKata
 {
     public class BookmarkProcess
     {
-        public void TranseFerFile()
-        {
-            var streamReader = File.OpenText(@"bookmarks.txt");
-            var write = new StreamWriter(@"bookmarks.csv");
-            write.AutoFlush = true;
+        private readonly IBookmarkRepository _document;
 
+        public BookmarkProcess()
+        {
+            _document = new OutputBookmarkRepository();
+        }
+
+        public void ClearTracingCode(string filePath)
+        {
+            var streamReader = File.OpenText(filePath);
+            var results = new List<string>();
             var matched = new Dictionary<string, int>();
             var duplicate = 0;
             var index = 1;
@@ -22,7 +27,6 @@ namespace RefactorKata
 
                 if (string.IsNullOrEmpty(line))
                 {
-                    write.WriteLine();
                     continue;
                 }
 
@@ -69,12 +73,12 @@ namespace RefactorKata
                 }
                 else
                 {
-                    write.WriteLine($"{split[1].TrimEnd()},{key}");
+                    results.Add($"{split[1].TrimEnd()},{key}");
                     matched.Add(key, index);
                 }
             }
 
-            write.Close();
+            _document.Save(results);
             Console.WriteLine("-------------------------------------");
             Console.WriteLine($"duplicate count: {duplicate}");
             Console.WriteLine($"total count: {index}");
