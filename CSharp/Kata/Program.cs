@@ -8,8 +8,8 @@ namespace RefactorKata
     {
         static void Main(string[] args)
         {
-            var streamReader = File.OpenText(@"..\bookmarks.txt");
-            var write = new StreamWriter(@"..\bookmarks.csv");
+            var streamReader = File.OpenText(@"bookmarks.txt");
+            var write = new StreamWriter(@"bookmarks.csv");
             write.AutoFlush = true;
 
             var matched = new Dictionary<string, int>();
