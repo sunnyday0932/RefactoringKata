@@ -32,49 +32,23 @@ namespace RefactorKata
 
                 var split = line.Split('|');
 
-                var key = split[0].TrimEnd();
+                var url = split[0].TrimEnd();
 
                 // 移除 url 中的 tracking 碼。utm, fblid
-                if (key.Contains("utm"))
+                url = RemoveTracingCode(url, "utm");
+                url = RemoveTracingCode(url, "fbclid");
+                url = RemoveTracingCode(url, "ptc");
+
+                if (matched.ContainsKey(url) == true)
                 {
-                    var utmIndex = key.IndexOf("utm");
-                    var end = key.IndexOf('&', utmIndex);
-                    if (end == -1)
-                    {
-                        end = key.Length;
-                    }
-
-                    key = key.Remove(utmIndex, end - utmIndex);
-                }
-
-                if (key.Contains("fbclid"))
-                {
-                    var fbclidIndex = key.IndexOf("fbclid");
-                    var end = key.IndexOf('&', fbclidIndex);
-
-                    if (end == -1)
-                    {
-                        end = key.Length;
-                    }
-
-                    key = key.Remove(fbclidIndex, end - fbclidIndex);
-                }
-
-                if (key.EndsWith("?"))
-                {
-                    key = key.Remove(key.Length - 1);
-                }
-
-                if (matched.ContainsKey(key) == true)
-                {
-                    Console.WriteLine($"{matched[key]:0000}: {key}");
+                    Console.WriteLine($"{matched[url]:0000}: {url}");
                     Console.WriteLine($"{index:0000}: {line}");
                     duplicate++;
                 }
                 else
                 {
-                    results.Add($"{split[1].TrimEnd()},{key}");
-                    matched.Add(key, index);
+                    results.Add($"{split[1].TrimEnd()},{url}");
+                    matched.Add(url, index);
                 }
             }
 
@@ -82,6 +56,33 @@ namespace RefactorKata
             Console.WriteLine("-------------------------------------");
             Console.WriteLine($"duplicate count: {duplicate}");
             Console.WriteLine($"total count: {index}");
+        }
+
+        public string RemoveTracingCode(string url, string target)
+        {
+            while (url.Contains(target))
+            {
+                var utmIndex = url.IndexOf(target);
+                var end = url.IndexOf('&', utmIndex);
+                if (end == -1)
+                {
+                    end = url.Length;
+                }
+
+                url = url.Remove(utmIndex, end - utmIndex);
+            }
+
+            if (url.EndsWith("&"))
+            {
+                url = url.Remove(url.Length - 1);
+            }
+
+            if (url.EndsWith("?"))
+            {
+                url = url.Remove(url.Length - 1);
+            }
+
+            return url;
         }
     }
 }
